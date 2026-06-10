@@ -1,4 +1,4 @@
-"""exp12b：DGT 判決修正——忠實重現 vs 論文原圖數值 vs 正確基準。
+"""exp12b：DGT 檢驗修正——忠實重現 vs 論文原圖數值 vs 正確基準。
 
 對照來源（literature/figures/，取自 arXiv HTML 原圖）：
 - DGTBTC.png：論文 BTC 各 grid size 的平均 IRR 長條（28–36%）、
@@ -10,8 +10,8 @@
 2. 忠實重現的論文式 IRR（exp12 sweep，按 size 對 m∈{2,5,10} 取平均）
 3. 現金流配對 B&H 的 XIRR（同錢、同時點直接買入持有）——正確基準
 
-結論視覺化：重現值與論文值形狀一致、水準低 6–11pp（版本不符）；
-但無論採信哪一組，正確基準（3）都高於 DGT——基準錯配才是致命傷。
+結論視覺化：論文值與正確 XIRR 量級相符（數值可信）；
+但無論採信哪一組，現金流配對基準（3）都高於 DGT——關鍵在基準選擇。
 """
 from __future__ import annotations
 
@@ -59,8 +59,8 @@ def main():
     ax.set_xticks(x)
     ax.set_xticklabels([f"size={s:.1%}" for s in agg.index])
     ax.set_ylabel("年化 IRR (%)")
-    ax.set_title("exp12b：DGT 判決修正——數字大致誠實（論文值接近正確XIRR量級），"
-                 "致命傷是基準錯配（紅線是錯的對手）\n"
+    ax.set_title("exp12b：DGT 檢驗——論文值接近正確 XIRR（數值可信），"
+                 "關鍵在基準選擇（紅線基準未含後續注資）\n"
                  "BTC/USDT，2021-01~2024-07，各 grid size 對 m=2/5/10 平均")
     ax.legend(fontsize=9)
     ax.grid(alpha=0.3, axis="y")

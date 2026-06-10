@@ -1,4 +1,4 @@
-"""exp12：DGT 完全仿造驗證（終審）。
+"""exp12：DGT 完全仿造驗證（完整檢驗）。
 
 引擎：逐行移植官方 repo（colachenkc/Dynamic-Grid-Trading）的封閉公式記帳——
 等差網格（步長 = 重置中心價 × grid_size）、上破回收本金+公式利潤、
