@@ -1,4 +1,4 @@
-# 網格交易與選擇權增強 DCA 的系統性研究
+# 網格交易與選擇權增強 DCA 的系統性研究-以BTC為標的
 ### A Systematic Study of Grid Trading and Options-Enhanced DCA on BTC
 
 > 15 個可重現實驗、3 份研究報告：從「上帝視角」理論上限出發，
