@@ -1,0 +1,15 @@
+# 資料快取（首次執行自動下載，1m K 線 >100MB）
+data/
+
+# 第三方內容（版權/他人著作）
+literature/papers/
+literature/code/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# 本地工具設定
+.claude/
+
