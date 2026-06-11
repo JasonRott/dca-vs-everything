@@ -13,3 +13,6 @@ __pycache__/
 # 本地工具設定
 .claude/
 
+
+# API 金鑰（絕不入庫）
+configs/binance_keys.json
