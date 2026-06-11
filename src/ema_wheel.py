@@ -50,10 +50,19 @@ FRACS = [0.10, 0.25]
 
 def run_ema_wheel(bars: pd.DataFrame, ema: pd.Series, iv: pd.Series,
                   frac: float, otm: float = OTM, buffer: float = BUFFER,
-                  put_cap: float = PUT_CAP, contrib: float = CONTRIB):
+                  put_cap: float = PUT_CAP, contrib: float = CONTRIB,
+                  put_frac: float | None = None, put_otm: float | None = None,
+                  hysteresis: str = "price", confirm_days: int = 7):
+    """hysteresis："price" = EMA×(1±buffer) 突破即切換（exp14 原版）；
+    "time" = 連續 confirm_days 個交易日開盤在 EMA 另一側才切換，
+    等待確認期間維持原 regime 行為（照常）。
+    put_frac / put_otm：抄底寶側獨立參數（預設同 call 側）。"""
+    put_frac = frac if put_frac is None else put_frac
+    put_otm = otm if put_otm is None else put_otm
     pool = qty = reserved = 0.0
     live_call = live_put = None
     state = None                       # "bull" / "bear"
+    opp_streak = 0                     # time 遲滯：連續反向日數
     cur_day = None
     n_c = n_p = ex_c = ex_p = 0
     prem_c = prem_p = 0.0
@@ -73,12 +82,19 @@ def run_ema_wheel(bars: pd.DataFrame, ema: pd.Series, iv: pd.Series,
                 cur_day = day
                 e = float(ema.loc[ts])
                 if np.isfinite(e):
-                    if op > e * (1 + buffer):
-                        state = "bull"
-                    elif op < e * (1 - buffer):
-                        state = "bear"
-                    elif state is None:
+                    if state is None:
                         state = "bull" if op >= e else "bear"
+                    elif hysteresis == "time":
+                        opposite = (op < e) if state == "bull" else (op > e)
+                        opp_streak = opp_streak + 1 if opposite else 0
+                        if opp_streak >= confirm_days:   # 一週未回頭→換框架
+                            state = "bear" if state == "bull" else "bull"
+                            opp_streak = 0
+                    else:                                # price 遲滯（exp14）
+                        if op > e * (1 + buffer):
+                            state = "bull"
+                        elif op < e * (1 - buffer):
+                            state = "bear"
                 if live_call is not None:
                     qc, kk = live_call
                     if op > kk and qty > 0:
@@ -119,8 +135,8 @@ def run_ema_wheel(bars: pd.DataFrame, ema: pd.Series, iv: pd.Series,
                         n_c += 1
                     elif state == "bear" and expo < put_cap \
                             and (pool - reserved) > 1.0:
-                        coll = frac * (pool - reserved)
-                        kk = op * (1 - otm)
+                        coll = put_frac * (pool - reserved)
+                        kk = op * (1 - put_otm)
                         prem = bs_put(op, kk, sig, 1 / 365) * (coll / kk)
                         pool += prem
                         prem_p += prem
