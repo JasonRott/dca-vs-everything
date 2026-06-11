@@ -40,8 +40,9 @@ COLORS = {"基準(永遠半倉)": "tab:gray", "A: EMA下不建倉": "tab:blue",
           "B: EMA上不建倉": "tab:red", "DCA": "tab:orange"}
 
 
-def build_ema(daily: pd.DataFrame, hourly_index: pd.DatetimeIndex) -> pd.Series:
-    ema_d = daily["close"].ewm(span=200, adjust=False).mean().shift(1)
+def build_ema(daily: pd.DataFrame, hourly_index: pd.DatetimeIndex,
+              span: int = 200) -> pd.Series:
+    ema_d = daily["close"].ewm(span=span, adjust=False).mean().shift(1)
     return ema_d.reindex(hourly_index, method="ffill")
 
 

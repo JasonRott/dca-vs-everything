@@ -42,7 +42,8 @@ BUFFER = 0.03
 
 
 def run_cc_plus(bars, ema, iv, vol_strike=False, inst_rebuy=False,
-                bear_put=False, frac=FRAC, contrib=CONTRIB):
+                bear_put=False, frac=FRAC, contrib=CONTRIB,
+                otm_fix=OTM_FIX, buffer=BUFFER):
     pool = qty = reserved = 0.0
     live_call = live_put = None
     cur_day = None
@@ -65,9 +66,9 @@ def run_cc_plus(bars, ema, iv, vol_strike=False, inst_rebuy=False,
                 cur_day = day
                 e = float(ema.loc[ts])
                 if np.isfinite(e):
-                    if op > e * (1 + BUFFER):
+                    if op > e * (1 + buffer):
                         state = "bull"
-                    elif op < e * (1 - BUFFER):
+                    elif op < e * (1 - buffer):
                         state = "bear"
                 if live_call is not None:
                     qc, kk = live_call
@@ -101,7 +102,7 @@ def run_cc_plus(bars, ema, iv, vol_strike=False, inst_rebuy=False,
                 sigma = iv.asof(ts)
                 if np.isfinite(sigma):
                     sig = float(sigma) / 100
-                    otm = K_SIGMA * sig / np.sqrt(365) if vol_strike else OTM_FIX
+                    otm = K_SIGMA * sig / np.sqrt(365) if vol_strike else otm_fix
                     e = float(ema.loc[ts])
                     if state == "bull" and np.isfinite(e) and op > e \
                             and qty > 0 and live_call is None:

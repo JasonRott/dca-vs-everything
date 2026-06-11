@@ -55,7 +55,8 @@ def run_accum(bars: pd.DataFrame, ratio: float, spacing: float,
               down_reopen: str = "immediate",
               call_frac: float = 0.0, call_otm: float = 0.03,
               call_trigger: str = "always",
-              iv: pd.Series | None = None, iv_mult: float = 1.0):
+              iv: pd.Series | None = None, iv_mult: float = 1.0,
+              width: float = WIDTH):
     """屯幣版網格。回傳 (診斷 dict, DataFrame[value, exposure, btc])。
 
     ema_mode（搭配 ema：與 bars 同索引、無前視的 200 日 EMA）：
@@ -104,7 +105,7 @@ def run_accum(bars: pd.DataFrame, ratio: float, spacing: float,
                     init_pos = False
                 elif ema_mode == "no_open_above" and p > e:
                     init_pos = False
-        lo, hi = p * (1 - WIDTH), p * (1 + WIDTH)
+        lo, hi = p * (1 - width), p * (1 + width)
         n = max(2, int(round(np.log(hi / lo) / np.log1p(spacing))))
         bot = GeometricGridBot(lo, hi, n, amt, fee=FEE)
         bot.start(p, initial_position=init_pos)

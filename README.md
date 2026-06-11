@@ -66,6 +66,21 @@
 - **逐筆引擎 + 官方程式碼交叉驗證**：DGT 檢驗同時用機制等價重現與其官方引擎雙路徑。
 - **審計文化**：所有關鍵主張對存檔結果重算核驗（恆等式檢查、跨實驗主張核對）。
 
+## 通用比較模組（換資產即用）
+
+一份 JSON 設定即可對任意資產跑出「DCA × 網格 × 雙輪選擇權 × 抄底寶 ×
+covered call」的完整比較報表（主視窗總表、滾動視窗勝率、總覽圖、
+自動生成的 REPORT.md）：
+
+```bash
+python src/strategy_compare.py --config configs/eth_example.json
+```
+
+設定四件事：資產資料（幣安 symbol 自動抓或自備 CSV）、牛熊基準
+（EMA 週期與緩衝帶）、選擇權與網格參數（IV 來源支援 `deribit:ETH` /
+`constant:55` / `realized:1.1` 已實現波動代理，故無 DVOL 的資產也能跑）、
+投入模式（每月金額）。範例見 `configs/`，輸出見 `results/compare_eth/`。
+
 ## 重現方式
 
 ```bash

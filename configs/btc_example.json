@@ -1,0 +1,17 @@
+{
+  "data": {"symbol": "BTCUSDT", "interval": "1h",
+           "start": "2018-01-01", "end": "2026-06-01"},
+  "iv": "deribit:BTC",
+  "regime": {"ema_span": 200, "buffer": 0.03},
+  "contrib": 1000,
+  "main_start": "2023-07-01",
+  "grid": {"width": 0.15, "spacing": 0.03, "ratio": 0.5,
+           "down_reopen": "immediate"},
+  "cc": {"frac": 0.25, "otm": 0.03, "inst_rebuy": true},
+  "puts": {"otm": 0.02},
+  "wheel": {"frac": 0.10, "otm": 0.03, "put_cap": 0.80},
+  "rolling": {"months": 24, "step": 3,
+              "start": "2021-06-01", "end": "2024-06-01"},
+  "strategies": ["cash", "dca", "grid", "dca_cc", "dca_puts", "dual_wheel"],
+  "out": "results/compare_btc"
+}
