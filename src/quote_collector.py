@@ -149,12 +149,14 @@ def main():
             apr, prem = match_dci(prods, spot, r["otm_pct"] / 100, r["side"])
             out.append({"date": today, "asset": ccy, **r,
                         "binance_apr": apr, "binance_prem_pct": prem,
+                        "pionex_strike": None, "pionex_days": None,
                         "pionex_apr": None, "spot": spot, "dvol": dvol})
     df = pd.DataFrame(out)
     LOG.parent.mkdir(exist_ok=True)
-    header = not LOG.exists()
-    df.to_csv(LOG, mode="a", header=header, index=False,
-              encoding="utf-8-sig")
+    if LOG.exists():        # 欄位演進時自動對齊舊紀錄
+        old = pd.read_csv(LOG)
+        df = pd.concat([old, df], ignore_index=True)
+    df.to_csv(LOG, index=False, encoding="utf-8-sig")
     pd.set_option("display.width", 220)
     cols = ["asset", "side", "otm_pct", "expiry_days", "strike",
             "deribit_bid_pct", "deribit_mark_pct", "bs_theory_pct",
